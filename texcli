@@ -1,0 +1,17 @@
+#!/usr/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "Error: There is no project name"
+    exit 1
+fi
+
+project_name=$1
+
+mkdir ${project_name}
+touch ${project_name}/main.tex
+mkdir ${project_name}/src
+touch ${project_name}/src/a.tex
+touch ${project_name}/Makefile
+
+dirname $0|xargs -I@ cat @/config/Makefile_template > ${project_name}/Makefile
+dirname $0|xargs -I@ cat @/config/main_template.tex > ${project_name}/main.tex
