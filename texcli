@@ -7,6 +7,9 @@ fi
 
 project_name=$1
 
+your_name="Aki"
+your_title="MyTitle"
+
 mkdir ${project_name}
 touch ${project_name}/main.tex
 mkdir ${project_name}/src
@@ -14,4 +17,4 @@ touch ${project_name}/src/a.tex
 touch ${project_name}/Makefile
 
 dirname $0|xargs -I@ cat @/config/Makefile_template > ${project_name}/Makefile
-dirname $0|xargs -I@ cat @/config/main_template.tex > ${project_name}/main.tex
+dirname $0|xargs -I@ cat @/config/main_template.tex|sed s/TITLE/${your_title}/| sed s/NAME/${your_name}/> ${project_name}/main.tex
