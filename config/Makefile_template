@@ -2,6 +2,9 @@ TEX = platex
 PDF = dvipdfmx
 f = main
 
+viewer = qpdfview
+#viewer = mupdf
+
 ${f}.pdf : ${f}.dvi
 	${PDF} $<
 
@@ -9,6 +12,6 @@ ${f}.dvi : ${f}.tex
 	${TEX} $< 
 
 opn :
-	mupdf ${f}.pdf &
+	${viewer} ${f}.pdf &
 
 .PHONY : opn

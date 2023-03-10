@@ -1,20 +1,50 @@
 #!/usr/bin/bash
 
+help=' useage: texcli <name of project> <options> \n
+options: \n
+-t, --title --title=: title of this document \n 
+-a , --author, --author=: author of this document '
+
 if [ $# -eq 0 ]; then
     echo "Error: There is no project name"
+    echo -e ${help} 
     exit 1
 fi
-
 project_name=$1
 
 your_name="Aki"
 your_title="MyTitle"
 
-mkdir ${project_name}
-touch ${project_name}/main.tex
-mkdir ${project_name}/src
-touch ${project_name}/src/a.tex
-touch ${project_name}/Makefile
+while(($# > 0))
+do
+    case $1 in
+        -t | --title | --title=*)
+            if [[ "$1" =~ ^--title= ]]; then
+                your_title=$(echo $1 | sed -e 's/^--title=//')
+            elif [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "'option require arguments.'" 1>&2
+                exit 1
+            else
+                your_title="$2"
+                shift
+            fi
+            ;;
+        -a | --author | --author=*)
+            if [[ "$1" =~ ^--author= ]]; then
+                your_name=$(echo $1 | sed -e 's/^--author=//')
+            elif [[ -z "$2" ]] || [[ "$2" =~ ^-+ ]]; then
+                echo "'option require arguments.'" 1>&2
+                exit 1
+            else
+                your_name="$2"
+                shift
+            fi
+    esac
+    shift
+done
 
-dirname $0|xargs -I@ cat @/config/Makefile_template > ${project_name}/Makefile
-dirname $0|xargs -I@ cat @/config/main_template.tex|sed s/TITLE/${your_title}/| sed s/NAME/${your_name}/> ${project_name}/main.tex
+mkdir ${project_name}
+cp $(dirname $0)/config/Makefile_template ${project_name}/Makefile
+cat $(dirname $0)/config/main_template.tex|sed s/TITLE/${your_title}/| sed s/NAME/${your_name}/> ${project_name}/main.tex
+
+mkdir ${project_name}/src
