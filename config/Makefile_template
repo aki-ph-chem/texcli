@@ -8,10 +8,24 @@ viewer = qpdfview
 ${f}.pdf : ${f}.dvi
 	${PDF} $<
 
+#${f}.dvi : ${f}.tex
+#	${TEX} $< 
 ${f}.dvi : ${f}.tex
-	${TEX} $< 
+	@(${TEX} -interaction=nonstopmode $< > /dev/null 2>&1); \
+		if [ $$? -eq 0 ]; then \
+		echo "compile 1 is successed!"; \
+		else \
+		echo -e "failure! please read ${f}.log"; \
+		fi
+	@(grep -q "Rerun to get" ${f}.log && platex -interaction=nonstopmode $< > /dev/null 2>&1); \
+		if [ $$? -eq 0 ]; then \
+		echo "compile 2 is successed!"; \
+		fi
 
 opn :
 	${viewer} ${f}.pdf &
 
-.PHONY : opn
+clean: 
+	rm *.aux *.dvi *.log *.pdf
+
+.PHONY : opn clean
